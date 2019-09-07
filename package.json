@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "cd ./frontend && yarn vue-cli-service serve",
-    "start:client": "yarn serve",
-    "start:server": "cd ./api && CompileDaemon -command=\"./api\"",
-    "build": "cd ./frontend && yarn vue-cli-service build",
-    "lint": "cd ./frontend && yarn vue-cli-service lint"
+    "start:client": "cd ./frontend && yarn vue-cli-service serve",
+    "start:server": "CompileDaemon -command=\"./newster\"",
+    "build:client": "cd ./frontend && yarn vue-cli-service build",
+    "build:server": "go build",
+    "lint": "cd ./frontend && yarn vue-cli-service lint",
+    "serve": "./newster.exe"
   },
   "license": "MIT"
 }

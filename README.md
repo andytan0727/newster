@@ -32,3 +32,9 @@ yarn start:client # for starting up client
 yarn start:server # for starting up api server
 ```
 
+To test production ready `Go` server hosting both front and backend, executes the following commands accordingly:
+```bash
+yarn build:client  # build client and output dist dir
+yarn build:server  # build api server and output an executable
+yarn serve         # execute the Go executable built
+```
