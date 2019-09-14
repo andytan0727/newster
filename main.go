@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -15,11 +16,27 @@ type spaHandler struct {
 	indexPath  string
 }
 
-// ServeHTTP serves the index.html from frontend SPA
+// ServeHTTP serves static files from frontend SPA
 // dist/ directory.
 func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// routing and 404 Error page is handled on the client side
-	http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
+	path := filepath.Join(h.staticPath, r.URL.Path)
+
+	// check whether a file exists at the given path
+	_, err := os.Stat(path)
+
+	if os.IsNotExist(err) {
+		// file does not exist, serve index.html
+		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
+		return
+	} else if err != nil {
+		// if we got an error (that wasn't that the file doesn't exist) stating the
+		// file, return a 500 internal server error and stop
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// serve static dir otherwise
+	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
 func main() {
@@ -34,8 +51,12 @@ func main() {
 	r.PathPrefix("/").Handler(spa)
 
 	srv := &http.Server{
-		Handler:      r,
-		Addr:         "127.0.0.1:8000",
+		Handler: r,
+
+		// using 0.0.0.0 to allow access from external world
+		// especially with the usage of docker
+		Addr: "0.0.0.0:8000",
+
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

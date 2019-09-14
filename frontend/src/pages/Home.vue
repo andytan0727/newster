@@ -1,6 +1,8 @@
 <template>
   <div class="main-content">
     <h1 class="top-title">Top News:</h1>
+    <h2 class="fetch-error" v-if="fetchError">Error Fetching News...</h2>
+
     <div class="spinner" v-if="loading">
       <loading-spinner></loading-spinner>
     </div>
@@ -21,6 +23,7 @@ export default {
   data() {
     return {
       loading: false,
+      fetchError: false,
       news: [],
     };
   },
@@ -28,7 +31,9 @@ export default {
     // spin up loader
     this.loading = true;
 
-    fetch("http://localhost:8000/api/csdn")
+    fetch(
+      `http://${location.hostname}:${process.env.VUE_APP_API_PORT}/api/csdn`
+    )
       .then(res => {
         return res.json();
       })
@@ -37,6 +42,7 @@ export default {
       })
       .catch(err => {
         console.log("Error fetching news: ", err);
+        this.fetchError = true;
       })
       .finally(() => {
         // remove loader either promise resolved or rejected
@@ -55,6 +61,13 @@ export default {
   height: 75vh;
   display: flex;
   align-items: center;
+}
+
+.fetch-error {
+  height: 65vh;
+  display: flex;
+  align-items: center;
+  color: red;
 }
 
 .main-content {

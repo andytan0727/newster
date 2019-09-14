@@ -5,10 +5,14 @@
   "scripts": {
     "start:client": "cd ./frontend && yarn vue-cli-service serve",
     "start:server": "CompileDaemon -command=\"./newster\"",
+    "start": "concurrently \"yarn start:server\" \"yarn start:client\"",
     "build:client": "cd ./frontend && yarn vue-cli-service build",
-    "build:server": "go build",
-    "lint": "cd ./frontend && yarn vue-cli-service lint",
-    "serve": "./newster.exe"
+    "build:server": "go build main.go",
+    "build": "yarn build:client && yarn build:server",
+    "lint:client": "cd ./frontend && yarn vue-cli-service lint"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^4.1.2"
+  }
 }
