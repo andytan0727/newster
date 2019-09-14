@@ -19,12 +19,11 @@ cd frontend
 yarn install
 ```
 
-Then, tidy up `go module`:
+Then, download all the modules specified by `go module`:
 ```bash
 cd api
-go mod tidy
+go mod download
 ```
-The `go mod tidy` will install the required `go modules` accordingly.
 
 Next, we can start our development server locally:
 ```bash
@@ -32,9 +31,26 @@ yarn start:client # for starting up client
 yarn start:server # for starting up api server
 ```
 
+Or with one-shot command:
+```bash
+yarn start        # concurrently start dev client and server
+```
+
 To test production ready `Go` server hosting both front and backend, executes the following commands accordingly:
 ```bash
-yarn build:client  # build client and output dist dir
-yarn build:server  # build api server and output an executable
-yarn serve         # execute the Go executable built
+yarn build
+./main             # or ./main.exe in Windows
 ```
+
+## Docker
+To containerize `newster`, firstly we build the `newster` image with `docker`. Make sure your local system has `docker` installed:
+```bash
+docker build -t newster .
+```
+The command above will produce a `newster` image which size is only as small as 10+ MB as of writing time.
+
+Next, we can run the image with:
+```bash
+docker run -it --rm -p 8000:8000 --name newster-app newster
+```
+The command above will create automatically disposed container using `newster` image built previously.
