@@ -11,18 +11,9 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 import NewsTitleList from "@/components/NewsTitleList";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-const port = process.env.PORT || process.env.VUE_APP_API_PORT;
-
-// request over https if hosting on cloud, else http if locally
-const protocol = location.protocol;
-const hostname = location.hostname;
-const url =
-  process.env.NODE_ENV === "production"
-    ? `${window.location.origin}/api/csdn`
-    : `${protocol}//${hostname}:${port}/api/csdn`;
 
 export default {
   name: "home",
@@ -32,30 +23,24 @@ export default {
   },
   data() {
     return {
-      loading: false,
       fetchError: false,
-      news: [],
     };
   },
+  computed: {
+    ...mapGetters(["loading"]),
+    news() {
+      return this.$store.getters.news("csdn");
+    },
+  },
+  methods: {
+    ...mapActions(["fetchNews"]),
+  },
   mounted() {
-    // spin up loader
-    this.loading = true;
-
-    fetch(url)
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.news = data.news;
-      })
-      .catch(err => {
-        console.log("Error fetching news: ", err);
-        this.fetchError = true;
-      })
-      .finally(() => {
-        // remove loader either promise resolved or rejected
-        this.loading = false;
-      });
+    // fetch news on mount
+    this.fetchNews("csdn").catch(err => {
+      console.log("Error fetching news: ", err);
+      this.fetchError = true;
+    });
   },
 };
 </script>

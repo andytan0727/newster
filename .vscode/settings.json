@@ -5,5 +5,6 @@
     "Newster",
     "Puerkito",
     "goquery"
-  ]
+  ],
+  "javascript.implicitProjectConfig.checkJs": false
 }
