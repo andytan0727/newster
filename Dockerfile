@@ -42,8 +42,6 @@ WORKDIR /usr/src/newster
 COPY --from=frontend /frontend/dist ./frontend/dist
 COPY --from=api /backend/main .
 
-EXPOSE 8080
-
 # execute main api/server binary
 # frontend spa is served at /, whereas api endpoint is served at /api
 CMD ["./main"] 

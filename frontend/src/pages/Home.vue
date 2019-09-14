@@ -16,6 +16,14 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 const port = process.env.PORT || process.env.VUE_APP_API_PORT;
 
+// request over https if hosting on cloud, else http if locally
+const protocol = location.protocol;
+const hostname = location.hostname;
+const url =
+  process.env.NODE_ENV === "production"
+    ? `${window.location.origin}/api/csdn`
+    : `${protocol}//${hostname}:${port}/api/csdn`;
+
 export default {
   name: "home",
   components: {
@@ -33,7 +41,7 @@ export default {
     // spin up loader
     this.loading = true;
 
-    fetch(`http://${location.hostname}:${port}/api/csdn`)
+    fetch(url)
       .then(res => {
         return res.json();
       })
