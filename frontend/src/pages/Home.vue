@@ -14,6 +14,8 @@
 import NewsTitleList from "@/components/NewsTitleList";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+const port = process.env.PORT || process.env.VUE_APP_API_PORT;
+
 export default {
   name: "home",
   components: {
@@ -31,9 +33,7 @@ export default {
     // spin up loader
     this.loading = true;
 
-    fetch(
-      `http://${location.hostname}:${process.env.VUE_APP_API_PORT}/api/csdn`
-    )
+    fetch(`http://${location.hostname}:${port}/api/csdn`)
       .then(res => {
         return res.json();
       })

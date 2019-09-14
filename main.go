@@ -40,6 +40,12 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT") // to get port defined by hosting platform
+
+	if port == "" {
+		port = "8000"
+	}
+
 	r := mux.NewRouter()
 	r.StrictSlash(true)
 
@@ -55,7 +61,7 @@ func main() {
 
 		// using 0.0.0.0 to allow access from external world
 		// especially with the usage of docker
-		Addr: "0.0.0.0:8000",
+		Addr: "0.0.0.0:" + port,
 
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
