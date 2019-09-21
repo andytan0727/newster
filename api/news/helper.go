@@ -13,8 +13,8 @@ func AddRequestHeaders(req *http.Request) {
 	req.Header.Add("Upgrade-Insecure-Requests", `1`)
 }
 
-// ShowScrapError shows error encountered when scraping
-func ShowScrapError(url string, err error) ([]News, error) {
+// ShowScrapError prints and return error encountered when scraping
+func ShowScrapError(url string, err error) error {
 	fmt.Printf("Error scraping from %s: %v\n", url, err)
-	return []News{}, err
+	return err
 }

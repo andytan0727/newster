@@ -22,14 +22,14 @@ func ScrapCSDN(url string) ([]News, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 
 	if err != nil {
-		return ShowScrapError(url, err)
+		return []News{}, ShowScrapError(url, err)
 	}
 
 	AddRequestHeaders(req)
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return ShowScrapError(url, err)
+		return []News{}, ShowScrapError(url, err)
 	}
 
 	defer resp.Body.Close()
@@ -37,7 +37,7 @@ func ScrapCSDN(url string) ([]News, error) {
 	document, err := goquery.NewDocumentFromReader(resp.Body)
 
 	if err != nil {
-		return ShowScrapError(url, err)
+		return []News{}, ShowScrapError(url, err)
 	}
 
 	document.Find(".title").Each(func(i int, sel *goquery.Selection) {
