@@ -2,7 +2,8 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
+	"log"
 	"net/http"
 
 	"github.com/andytan0727/newster/api/news"
@@ -18,19 +19,30 @@ type NewsJSONResp struct {
 // news data from CSDN
 func csdnScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 	SetCORSHeaders(w)
-	fmt.Println("Scraping CSDN...")
-	csdnNews, err := news.ScrapCSDN("https://www.csdn.net/")
+	log.Println("Scraping CSDN...")
 
-	if err != nil {
+	url := "https://www.csdn.net/"
+
+	var (
+		body         io.ReadCloser
+		csdnNews     []news.News
+		csdnNewsJSON []byte
+		err          error
+	)
+
+	if body, err = news.RequestData(url); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	csdnNewsJSON, err := json.Marshal(NewsJSONResp{
-		News: csdnNews,
-	})
+	if csdnNews, err = news.ScrapCSDN(url, body); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	if err != nil {
+	if csdnNewsJSON, err = json.Marshal(NewsJSONResp{
+		News: csdnNews,
+	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -38,6 +50,11 @@ func csdnScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(csdnNewsJSON)
+
+	// log success message if scrap ends with no err
+	if err == nil {
+		log.Println("Successfully scraped CSDN...")
+	}
 }
 
 // SetupRoutes setup routes for all routes in this api

@@ -2,6 +2,7 @@ package news
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -13,8 +14,17 @@ func AddRequestHeaders(req *http.Request) {
 	req.Header.Add("Upgrade-Insecure-Requests", `1`)
 }
 
-// ShowScrapError prints and return error encountered when scraping
-func ShowScrapError(url string, err error) error {
-	fmt.Printf("Error scraping from %s: %v\n", url, err)
-	return err
+// ScrapError prints and return error encountered when scraping
+func ScrapError(url string, err error) error {
+	msg := fmt.Sprintf("Error scraping from %s: %v", url, err.Error())
+	log.Println(msg)
+	return fmt.Errorf(msg)
+}
+
+// QueryDocumentError prints and returns error encountered when querying
+// html document with goquery
+func QueryDocumentError(url string, err error) error {
+	msg := fmt.Sprintf("Error query document from %s: %v", url, err.Error())
+	log.Println(msg)
+	return fmt.Errorf(msg)
 }

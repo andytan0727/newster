@@ -1,6 +1,7 @@
 package news
 
 import (
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -8,36 +9,43 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
-	timeout   = time.Duration(5 * time.Second)
-)
+const timeout = time.Duration(5 * time.Second)
 
-var client = &http.Client{
-	Timeout: timeout,
-}
+// RequestData sends http request to particular site
+// and return a response body
+func RequestData(url string) (io.ReadCloser, error) {
+	var (
+		req  *http.Request
+		resp *http.Response
+		err  error
+	)
 
-// ScrapCSDN scraps data from CSDN
-func ScrapCSDN(url string) ([]News, error) {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	client := &http.Client{
+		Timeout: timeout,
+	}
 
-	if err != nil {
-		return []News{}, ShowScrapError(url, err)
+	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
+		return nil, ScrapError(url, err)
 	}
 
 	AddRequestHeaders(req)
-	resp, err := client.Do(req)
 
-	if err != nil {
-		return []News{}, ShowScrapError(url, err)
+	if resp, err = client.Do(req); err != nil {
+		return nil, ScrapError(url, err)
 	}
 
-	defer resp.Body.Close()
+	return resp.Body, nil
+}
+
+// ScrapCSDN scraps data from CSDN
+func ScrapCSDN(url string, body io.ReadCloser) ([]News, error) {
+	defer body.Close()
+
 	var news []News
-	document, err := goquery.NewDocumentFromReader(resp.Body)
+	document, err := goquery.NewDocumentFromReader(body)
 
 	if err != nil {
-		return []News{}, ShowScrapError(url, err)
+		return []News{}, QueryDocumentError(url, err)
 	}
 
 	document.Find(".title").Each(func(i int, sel *goquery.Selection) {
