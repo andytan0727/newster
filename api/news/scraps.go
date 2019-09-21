@@ -13,7 +13,7 @@ const timeout = time.Duration(10 * time.Second)
 
 // RequestData sends http request to particular site
 // and return a response body
-func RequestData(url string) (io.ReadCloser, error) {
+func (r Request) RequestData() (io.ReadCloser, error) {
 	var (
 		req  *http.Request
 		resp *http.Response
@@ -24,28 +24,37 @@ func RequestData(url string) (io.ReadCloser, error) {
 		Timeout: timeout,
 	}
 
-	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
-		return nil, ScrapError(url, err)
+	if req, err = http.NewRequest(http.MethodGet, r.URL, nil); err != nil {
+		return nil, ScrapError(r.URL, err)
 	}
 
 	AddRequestHeaders(req)
 
 	if resp, err = client.Do(req); err != nil {
-		return nil, ScrapError(url, err)
+		return nil, ScrapError(r.URL, err)
 	}
 
 	return resp.Body, nil
 }
 
-// ScrapCSDN scraps data from CSDN
-func ScrapCSDN(url string, body io.ReadCloser) ([]News, error) {
+// Scrap scraps data from CSDN
+func (s CSDNScraper) Scrap() ([]News, error) {
+	var (
+		body io.ReadCloser
+		err  error
+		news []News
+	)
+
+	if body, err = s.RequestData(); err != nil {
+		return []News{}, ScrapError(s.URL, err)
+	}
+
 	defer body.Close()
 
-	var news []News
 	document, err := goquery.NewDocumentFromReader(body)
 
 	if err != nil {
-		return []News{}, QueryDocumentError(url, err)
+		return []News{}, QueryDocumentError(s.URL, err)
 	}
 
 	document.Find(".title").Each(func(i int, sel *goquery.Selection) {

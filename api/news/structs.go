@@ -1,16 +1,19 @@
 package news
 
-import "time"
-
 // News defines struct holding information scrapped: title and url of a news
 type News struct {
 	Title string `json:"title"`
 	URL   string `json:"url"`
 }
 
-// Scraper contains information necessary for a req
-// to be success
-type Scraper struct {
-	UserAgent string
-	Timeout   time.Duration
+// Request consists of a URL of website to request,
+// and a RequestData method
+type Request struct {
+	URL string
+}
+
+// CSDNScraper contains method to scrap CSDN and an
+// extended Request struct to perform HTTP request
+type CSDNScraper struct {
+	Request
 }

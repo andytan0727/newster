@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 
@@ -21,21 +20,16 @@ func csdnScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 	SetCORSHeaders(w)
 	log.Println("Scraping CSDN...")
 
-	url := "https://www.csdn.net/"
-
 	var (
-		body         io.ReadCloser
+		scraper      news.Scraper
 		csdnNews     []news.News
 		csdnNewsJSON []byte
 		err          error
 	)
 
-	if body, err = news.RequestData(url); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	scraper = news.CSDNScraper{Request: news.Request{URL: "https://www.csdn.net/"}}
 
-	if csdnNews, err = news.ScrapCSDN(url, body); err != nil {
+	if csdnNews, err = scraper.Scrap(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
