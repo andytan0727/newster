@@ -9,7 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const timeout = time.Duration(5 * time.Second)
+const timeout = time.Duration(10 * time.Second)
 
 // RequestData sends http request to particular site
 // and return a response body
