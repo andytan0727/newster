@@ -1,6 +1,6 @@
 <template>
   <div class="navbar-news-panel">
-    <router-link to="/csdn">CSDN</router-link>
+    <router-link to="/news/csdn">CSDN</router-link>
   </div>
 </template>
 

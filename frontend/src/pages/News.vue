@@ -16,10 +16,17 @@ import NewsTitleList from "@/components/NewsTitleList";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default {
-  name: "home",
+  name: "news",
   components: {
     NewsTitleList,
     LoadingSpinner,
+  },
+  props: {
+    newsType: {
+      type: String,
+      required: true,
+      default: "csdn", // TODO: remove if new home page is made later
+    },
   },
   data() {
     return {
@@ -29,15 +36,26 @@ export default {
   computed: {
     ...mapGetters(["loading"]),
     news() {
-      return this.$store.getters.news("csdn");
+      return this.$store.getters.news(this.newsType);
     },
   },
   methods: {
     ...mapActions(["fetchNews"]),
   },
-  mounted() {
-    // fetch news on mount
-    this.fetchNews("csdn").catch(err => {
+  beforeRouteUpdate(to, from, next) {
+    const { newsType } = to.params;
+
+    // fetch again if newsType param changed in /news
+    this.fetchNews(newsType).catch(err => {
+      console.log("Error fetching news: ", err);
+      this.fetchError = true;
+    });
+
+    // remember to call next()
+    next();
+  },
+  created() {
+    this.fetchNews(this.newsType).catch(err => {
       console.log("Error fetching news: ", err);
       this.fetchError = true;
     });
