@@ -17,3 +17,9 @@ type Request struct {
 type CSDNScraper struct {
 	Request
 }
+
+// CSSTricksScraper contains method to scrap CSS-Trick
+// and an extended Request struct to perform HTTP request
+type CSSTricksScraper struct {
+	Request
+}

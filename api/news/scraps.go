@@ -69,3 +69,36 @@ func (s CSDNScraper) Scrap() ([]News, error) {
 
 	return news, nil
 }
+
+// Scrap scraps data from CSS-Trick
+func (s CSSTricksScraper) Scrap() ([]News, error) {
+	var (
+		body io.ReadCloser
+		err  error
+		news []News
+	)
+
+	if body, err = s.RequestData(); err != nil {
+		return []News{}, ScrapError(s.URL, err)
+	}
+
+	defer body.Close()
+
+	document, err := goquery.NewDocumentFromReader(body)
+
+	if err != nil {
+		return []News{}, QueryDocumentError(s.URL, err)
+	}
+
+	document.Find(".article-article").Each(func(i int, sel *goquery.Selection) {
+		a := sel.Find("h2 a").First()
+		url, exist := a.Attr("href")
+		newsTitle := strings.TrimSpace(a.Text())
+
+		if len(newsTitle) != 0 && exist {
+			news = append(news, News{Title: newsTitle, URL: url})
+		}
+	})
+
+	return news, nil
+}
