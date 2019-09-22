@@ -1,0 +1,6 @@
+root = true
+
+# solves formatting issue in gopls
+# ref: https://github.com/golang/go/issues/31937#issuecomment-521020045
+[*.go]
+end_of_line = lf
