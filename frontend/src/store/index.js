@@ -11,6 +11,7 @@ const store = new Vuex.Store({
     news: {
       // set an empty object instead of undefined to trigger Vue change mechanism
       csdn: [],
+      "css-tricks": [],
     },
     loading: false,
     fetchError: false,
