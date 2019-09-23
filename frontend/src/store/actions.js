@@ -9,7 +9,7 @@ const actions = {
     const hostname = location.hostname;
     const url =
       process.env.NODE_ENV === "production"
-        ? `${window.location.origin}/api/csdn`
+        ? `${window.location.origin}/api/${newsType}`
         : `${protocol}//${hostname}:${port}/api/${newsType}`;
 
     // spin up loader
