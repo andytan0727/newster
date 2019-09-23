@@ -9,16 +9,20 @@ const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== "production",
   state: {
     news: {
-      // set an empty object instead of undefined to trigger Vue change mechanism
-      csdn: [],
-      "css-tricks": [],
+      // set an empty array to data instead of undefined to trigger Vue change mechanism
+      csdn: {
+        data: [],
+      },
+      "css-tricks": {
+        data: [],
+      },
     },
     loading: false,
     fetchError: false,
   },
   getters: {
-    news: state => newsType => {
-      return state.news[newsType];
+    newsData: state => newsType => {
+      return state.news[newsType].data;
     },
     loading: state => state.loading,
   },

@@ -6,7 +6,7 @@
     <div class="spinner" v-if="loading">
       <loading-spinner></loading-spinner>
     </div>
-    <news-title-list v-else :news="news"></news-title-list>
+    <news-title-list v-else :news="newsData"></news-title-list>
   </div>
 </template>
 
@@ -35,8 +35,8 @@ export default {
   },
   computed: {
     ...mapGetters(["loading"]),
-    news() {
-      return this.$store.getters.news(this.newsType);
+    newsData() {
+      return this.$store.getters.newsData(this.newsType);
     },
   },
   methods: {
