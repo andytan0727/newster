@@ -25,7 +25,6 @@ export default {
     newsType: {
       type: String,
       required: true,
-      default: "csdn", // TODO: remove if new home page is made later
     },
   },
   data() {
