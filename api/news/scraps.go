@@ -102,3 +102,42 @@ func (s CSSTricksScraper) Scrap() ([]News, error) {
 
 	return news, nil
 }
+
+// Scrap from DevToScraper scraps data from dev.to
+func (s DevToScraper) Scrap() ([]News, error) {
+	var (
+		body io.ReadCloser
+		err  error
+		news []News
+	)
+
+	if body, err = s.RequestData(); err != nil {
+		return []News{}, ScrapError(s.URL, err)
+	}
+
+	defer body.Close()
+
+	document, err := goquery.NewDocumentFromReader(body)
+
+	if err != nil {
+		return []News{}, QueryDocumentError(s.URL, err)
+	}
+
+	document.Find(".index-article-link").Each(func(i int, sel *goquery.Selection) {
+		a := sel
+		url, exist := a.Attr("href")
+		titleContent := sel.Find("h3")
+
+		// remove span that contains hashtags
+		titleContent.Find("span").Remove()
+
+		newsTitle := strings.TrimSpace(titleContent.Text())
+
+		if len(newsTitle) != 0 && exist {
+			fullURL := "https://dev.to" + url
+			news = append(news, News{Title: newsTitle, URL: fullURL})
+		}
+	})
+
+	return news, nil
+}

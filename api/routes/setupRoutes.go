@@ -29,6 +29,10 @@ var sites = map[string]siteInfo{
 		Name: "CSS-Tricks",
 		URL:  "https://css-tricks.com/archives/",
 	},
+	"dev-to": {
+		Name: "DEV TO",
+		URL:  "https://dev.to/",
+	},
 }
 
 // csdnScrapRouteHandler is a handler to get latest
@@ -109,9 +113,49 @@ func cssTricksScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// devToScrapRouteHandler is a handler to get
+// latest articles (news) data from dev.to
+func devToScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
+	SetCORSHeaders(w)
+
+	var (
+		scraper       news.Scraper
+		devToArticles []news.News
+		devToJSON     []byte
+		err           error
+	)
+	devTo := sites["dev-to"]
+
+	log.Printf("Scraping %s...", devTo.Name)
+
+	scraper = news.DevToScraper{Request: news.Request{URL: devTo.URL}}
+
+	if devToArticles, err = scraper.Scrap(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if devToJSON, err = json.Marshal(NewsJSONResp{
+		News: devToArticles,
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(devToJSON)
+
+	// log success message if scrap ends with no err
+	if err == nil {
+		log.Printf("Successfully scraped %s", devTo.Name)
+	}
+}
+
 // SetupRoutes setup routes for all routes in this api
 func SetupRoutes(r *mux.Router) {
 	apiRoute := r.PathPrefix("/api").Subrouter()
 	apiRoute.Methods(http.MethodGet).Path("/csdn").HandlerFunc(csdnScrapRouteHandler)
 	apiRoute.Methods(http.MethodGet).Path("/css-tricks").HandlerFunc(cssTricksScrapRouteHandler)
+	apiRoute.Methods(http.MethodGet).Path("/dev-to").HandlerFunc(devToScrapRouteHandler)
 }

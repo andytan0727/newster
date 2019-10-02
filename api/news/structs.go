@@ -23,3 +23,9 @@ type CSDNScraper struct {
 type CSSTricksScraper struct {
 	Request
 }
+
+// DevToScraper contains method to scrap dev.to
+// and an extended Request struct to perform HTTP request
+type DevToScraper struct {
+	Request
+}
