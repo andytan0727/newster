@@ -6,26 +6,32 @@ type News struct {
 	URL   string `json:"url"`
 }
 
-// Request consists of a URL of website to request,
-// and a RequestData method
-type Request struct {
-	URL string
+// JSONResp is JSON response containing news
+type JSONResp struct {
+	News []News `json:"news"`
 }
 
+// RequestNews implements Request interface that consists
+// a RequestData method to be used in Scrapers
+type RequestNews struct{}
+
 // CSDNScraper contains method to scrap CSDN and an
-// extended Request struct to perform HTTP request
+// extended Request interface to perform HTTP request
 type CSDNScraper struct {
+	URL string
 	Request
 }
 
 // CSSTricksScraper contains method to scrap CSS-Trick
-// and an extended Request struct to perform HTTP request
+// and an extended Request interface to perform HTTP request
 type CSSTricksScraper struct {
+	URL string
 	Request
 }
 
 // DevToScraper contains method to scrap dev.to
-// and an extended Request struct to perform HTTP request
+// and an extended Request interface to perform HTTP request
 type DevToScraper struct {
+	URL string
 	Request
 }

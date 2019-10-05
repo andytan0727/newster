@@ -9,11 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// NewsJSONResp is JSON response containing news
-type NewsJSONResp struct {
-	News []news.News `json:"news"`
-}
-
 type siteInfo struct {
 	Name string
 	URL  string
@@ -50,14 +45,14 @@ func csdnScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Scraping %s...", csdn.Name)
 
-	scraper = news.CSDNScraper{Request: news.Request{URL: csdn.URL}}
+	scraper = news.CSDNScraper{Request: news.RequestNews{}, URL: csdn.URL}
 
 	if csdnNews, err = scraper.Scrap(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if csdnNewsJSON, err = json.Marshal(NewsJSONResp{
+	if csdnNewsJSON, err = json.Marshal(news.JSONResp{
 		News: csdnNews,
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -89,14 +84,14 @@ func cssTricksScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Scraping %s...", cssTricks.Name)
 
-	scraper = news.CSSTricksScraper{Request: news.Request{URL: cssTricks.URL}}
+	scraper = news.CSSTricksScraper{Request: news.RequestNews{}, URL: cssTricks.URL}
 
 	if cssTricksArticles, err = scraper.Scrap(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if cssTricksJSON, err = json.Marshal(NewsJSONResp{
+	if cssTricksJSON, err = json.Marshal(news.JSONResp{
 		News: cssTricksArticles,
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -128,14 +123,14 @@ func devToScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Scraping %s...", devTo.Name)
 
-	scraper = news.DevToScraper{Request: news.Request{URL: devTo.URL}}
+	scraper = news.DevToScraper{Request: news.RequestNews{}, URL: devTo.URL}
 
 	if devToArticles, err = scraper.Scrap(); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if devToJSON, err = json.Marshal(NewsJSONResp{
+	if devToJSON, err = json.Marshal(news.JSONResp{
 		News: devToArticles,
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

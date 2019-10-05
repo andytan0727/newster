@@ -13,7 +13,7 @@ const timeout = time.Duration(10 * time.Second)
 
 // RequestData sends http request to particular site
 // and return a response body
-func (r Request) RequestData() (io.ReadCloser, error) {
+func (r RequestNews) RequestData(url string) (io.ReadCloser, error) {
 	var (
 		req  *http.Request
 		resp *http.Response
@@ -24,14 +24,14 @@ func (r Request) RequestData() (io.ReadCloser, error) {
 		Timeout: timeout,
 	}
 
-	if req, err = http.NewRequest(http.MethodGet, r.URL, nil); err != nil {
-		return nil, ScrapError(r.URL, err)
+	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
+		return nil, ScrapError(url, err)
 	}
 
 	AddRequestHeaders(req)
 
 	if resp, err = client.Do(req); err != nil {
-		return nil, ScrapError(r.URL, err)
+		return nil, ScrapError(url, err)
 	}
 
 	return resp.Body, nil
@@ -45,7 +45,7 @@ func (s CSDNScraper) Scrap() ([]News, error) {
 		news []News
 	)
 
-	if body, err = s.RequestData(); err != nil {
+	if body, err = s.RequestData(s.URL); err != nil {
 		return []News{}, ScrapError(s.URL, err)
 	}
 
@@ -78,7 +78,7 @@ func (s CSSTricksScraper) Scrap() ([]News, error) {
 		news []News
 	)
 
-	if body, err = s.RequestData(); err != nil {
+	if body, err = s.RequestData(s.URL); err != nil {
 		return []News{}, ScrapError(s.URL, err)
 	}
 
@@ -111,7 +111,7 @@ func (s DevToScraper) Scrap() ([]News, error) {
 		news []News
 	)
 
-	if body, err = s.RequestData(); err != nil {
+	if body, err = s.RequestData(s.URL); err != nil {
 		return []News{}, ScrapError(s.URL, err)
 	}
 
