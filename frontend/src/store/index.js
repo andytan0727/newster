@@ -26,6 +26,14 @@ const store = new Vuex.Store({
         newsLink: "/news/css-tricks",
         data: [],
       },
+      "dev-to": {
+        logoUrl:
+          "https://res.cloudinary.com/practicaldev/image/fetch/s--7-9vabgh--/c_fill,f_auto,fl_progressive,h_320,q_auto,w_320/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/3/13d3b32a-d381-4549-b95e-ec665768ce8f.png",
+        logoAlt: "DevTo Logo",
+        desc: "DevTo News",
+        newsLink: "/news/dev-to",
+        data: [],
+      },
     },
     loading: false,
     fetchError: false,
