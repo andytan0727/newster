@@ -50,7 +50,7 @@ export default {
     width: 110px;
 
     @media screen and (min-width: $tablet-width) {
-      height: 50px;
+      height: 70px;
       width: 200px;
     }
   }
