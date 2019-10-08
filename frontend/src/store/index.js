@@ -44,6 +44,13 @@ const store = new Vuex.Store({
     },
     newsKey: state => Object.keys(state.news),
 
+    // get newsLinks with its title name to be used in navbar
+    newsLinks: state =>
+      Object.keys(state.news).map(key => ({
+        name: key,
+        link: state.news[key].newsLink,
+      })),
+
     // get home news panel data without data fetched
     homeNewsPanelData: state =>
       Object.keys(state.news).map(k => ({ ...state.news[k], data: undefined })),

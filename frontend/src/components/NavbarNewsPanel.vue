@@ -1,13 +1,21 @@
 <template>
-  <div class="navbar-news-panel">
-    <router-link to="/news/csdn">CSDN</router-link>
-    <router-link to="/news/css-tricks">CSS-Tricks</router-link>
-  </div>
+  <nav class="navbar-news-panel">
+    <template v-for="newsLink in newsLinks">
+      <router-link :key="newsLink.link" :to="newsLink.link">
+        {{ newsLink.name.toUpperCase() }}
+      </router-link>
+    </template>
+  </nav>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "navbar-news-panel",
+  computed: {
+    ...mapGetters(["newsLinks"]),
+  },
 };
 </script>
 
