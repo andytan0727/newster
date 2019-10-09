@@ -27,7 +27,7 @@ var testCases = []struct {
 	scraper        Scraper
 	wantNewsLength int
 }{
-	{scraper: CSDNScraper{Request: mockedRequest{}, URL: "../mocks/mockCSDNNews.html"}, wantNewsLength: 35},
+	{scraper: CSDNScraper{Request: mockedRequest{}, URL: "../mocks/mockCSDNNews.html"}, wantNewsLength: 29},
 
 	{scraper: CSSTricksScraper{Request: mockedRequest{}, URL: "../mocks/mockCssTricksNews.html"}, wantNewsLength: 10},
 
