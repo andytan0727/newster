@@ -12,7 +12,7 @@ const store = new Vuex.Store({
     // Vue change mechanism
     news: {
       csdn: {
-        logoUrl: "https://csdnimg.cn/cdn/content-toolbar/csdnlogo.png",
+        logoUrl: "https://img-bss.csdnimg.cn/201703281626142726.png",
         logoAlt: "CSDN Logo",
         desc: "CSDN News",
         newsLink: "/news/csdn",
