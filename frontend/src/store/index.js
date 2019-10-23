@@ -10,6 +10,7 @@ const store = new Vuex.Store({
   state: {
     // set an empty array to news data instead of undefined to trigger
     // Vue change mechanism
+    // NOTE: key should be same with the name of endpoint
     news: {
       csdn: {
         logoUrl: "https://img-bss.csdnimg.cn/201703281626142726.png",
@@ -32,6 +33,13 @@ const store = new Vuex.Store({
         logoAlt: "DevTo Logo",
         desc: "DevTo News",
         newsLink: "/news/dev-to",
+        data: [],
+      },
+      "gh-trending": {
+        logoUrl: "http://pngimg.com/uploads/github/github_PNG30.png",
+        logoAlt: "Github logo",
+        desc: "Github Trending",
+        newsLink: "/news/gh-trending",
         data: [],
       },
     },
