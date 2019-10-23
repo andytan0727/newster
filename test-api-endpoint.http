@@ -4,4 +4,7 @@ GET http://localhost:8000/api/csdn HTTP/1.1
 GET http://localhost:8000/api/css-tricks HTTP/1.1 
 
 ###
-GET http://localhost:8000/api/dev-to
+GET http://localhost:8000/api/dev-to HTTP/1.1 
+
+###
+GET http://localhost:8000/api/gh-trending HTTP/1.1 

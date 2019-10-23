@@ -141,3 +141,42 @@ func (s DevToScraper) Scrap() ([]News, error) {
 
 	return news, nil
 }
+
+// Scrap from GithubTrendingScraper scraps data from github trending
+func (s GithubTrendingScraper) Scrap() ([]News, error) {
+	var (
+		body io.ReadCloser
+		err  error
+		news []News
+	)
+
+	if body, err = s.RequestData(s.URL); err != nil {
+		return []News{}, ScrapError(s.URL, err)
+	}
+
+	defer body.Close()
+
+	document, err := goquery.NewDocumentFromReader(body)
+
+	if err != nil {
+		return []News{}, QueryDocumentError(s.URL, err)
+	}
+
+	document.Find(".Box-row .lh-condensed a").Each(func(i int, sel *goquery.Selection) {
+		a := sel
+		repoURL, exist := a.Attr("href")
+
+		if !exist {
+			return
+		}
+
+		newsTitle := repoURL[1:]
+
+		if len(newsTitle) != 0 && exist {
+			fullURL := "https://github.com" + repoURL
+			news = append(news, News{Title: newsTitle, URL: fullURL})
+		}
+	})
+
+	return news, nil
+}

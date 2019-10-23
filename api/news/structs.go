@@ -35,3 +35,10 @@ type DevToScraper struct {
 	URL string
 	Request
 }
+
+// GithubTrendingScraper contains method to scrap github
+// trend and an extended Request interface to perform HTTP request
+type GithubTrendingScraper struct {
+	URL string
+	Request
+}

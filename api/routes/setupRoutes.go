@@ -28,6 +28,10 @@ var sites = map[string]siteInfo{
 		Name: "DEV TO",
 		URL:  "https://dev.to/",
 	},
+	"github-trending": {
+		Name: "Github Trending",
+		URL:  "https://github.com/trending",
+	},
 }
 
 // csdnScrapRouteHandler is a handler to get latest
@@ -147,10 +151,50 @@ func devToScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// githubTrendingScrapRouteHandler is a handler to get
+// latest articles (news) data from github trending
+func githubTrendingScrapRouteHandler(w http.ResponseWriter, r *http.Request) {
+	SetCORSHeaders(w)
+
+	var (
+		scraper                 news.Scraper
+		githubTrendingRepos     []news.News
+		githubTrendingReposJSON []byte
+		err                     error
+	)
+	githubTrending := sites["github-trending"]
+
+	log.Printf("Scraping %s...", githubTrending.Name)
+
+	scraper = news.GithubTrendingScraper{Request: news.RequestNews{}, URL: githubTrending.URL}
+
+	if githubTrendingRepos, err = scraper.Scrap(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if githubTrendingReposJSON, err = json.Marshal(news.JSONResp{
+		News: githubTrendingRepos,
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(githubTrendingReposJSON)
+
+	// log success message if scrap ends with no err
+	if err == nil {
+		log.Printf("Successfully scraped %s", githubTrending.Name)
+	}
+}
+
 // SetupRoutes setup routes for all routes in this api
 func SetupRoutes(r *mux.Router) {
 	apiRoute := r.PathPrefix("/api").Subrouter()
 	apiRoute.Methods(http.MethodGet).Path("/csdn").HandlerFunc(csdnScrapRouteHandler)
 	apiRoute.Methods(http.MethodGet).Path("/css-tricks").HandlerFunc(cssTricksScrapRouteHandler)
 	apiRoute.Methods(http.MethodGet).Path("/dev-to").HandlerFunc(devToScrapRouteHandler)
+	apiRoute.Methods(http.MethodGet).Path("/gh-trending").HandlerFunc(githubTrendingScrapRouteHandler)
 }
