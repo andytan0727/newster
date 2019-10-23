@@ -19,8 +19,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 2px solid black;
   padding: 1rem 0;
+  margin-top: 1.2rem;
 
   @media screen and (max-width: 40em) {
     font-size: 0.8rem;
